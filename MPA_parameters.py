@@ -47,13 +47,10 @@ print('Enter your estimated feed width (in mm):')
 w=3; #int(input());
 
 
-def testimpedance(w):
+def testimpedance(w,e_eff):
     #calculation of effective dielectric constant
-    e1 = (er + 1)/2;
-    e2 = (er - 1)/2;
-    e3 = 1/math.sqrt(1 + 12*(h/w));4
 
-    er_eff = e1 + e2*e3;
+    er_eff = e_eff;
 
     k_0 = 2*math.pi*f/c;
     beta = k_0*math.sqrt(er_eff);
@@ -70,17 +67,23 @@ def testimpedance(w):
       Z_0 = z2*z1;
 
     if Z_0<49.8:
-        print("iterating ...Reducing the feed width. Current impedance of the feed: {} Ohms" .format(Z_0))
+        #print("iterating ...Reducing the feed width. Current impedance of the feed: {} Ohms" .format(Z_0))
         w = w - increment;
-        Z_0 = testimpedance(w);
+        Z_0 = testimpedance(w,e_eff);
     elif Z_0>50.2:
-        print("iterating...Increamath.sint the feed width. Current impedance of the feed: {} Ohms".format(Z_0))
+        #print("iterating...Increamath.sint the feed width. Current impedance of the feed: {} Ohms".format(Z_0))
         w = w + increment;
-        Z_0 = testimpedance(w);
+        Z_0 = testimpedance(w,e_eff);
     else:
         pass
 
     return Z_0
 
-Z_0 = testimpedance(w)
-print("Design complete. Current impedance of the feed: ", Z_0)
+Z_0 = testimpedance(w,e_eff)
+print("Interations complete.")
+print("Current impedance of the feed (in mm): ", Z_0)
+print("Determined length of the feed (in mm): ", w)
+
+#inse gap
+g = ((c*(4.65e-12))/(math.sqrt(2*e_eff)*(f*(1e-9))));
+print("the inset gap", g*1000)
