@@ -4,13 +4,19 @@ import scipy.integrate as integrate
 import scipy.special as special
 from numpy import log as ln
 
+########################################
+# inputs
 print('Enter the di-electric constant:')
 er=4.2; #int(input());
 print('Enter the substrate thickness (in mm)')
 h=1.6; #int(input());
 print('Enter the frequency (GHz):')
 f=1.95; #int(input());
+print('Enter your estimated feed width (in mm):')
+w=6; #int(input());
 
+
+#######################################
 f=f*1e9;
 u0 = 1.25663706e-6; #permeability of free space
 e0 = 8.85418782e-12; #permittivity of free space
@@ -42,16 +48,13 @@ print("The width is: ", wid, "mm")
 print("The length is: ", L, "mm")
 print("The inset feed point is: ", inset, "mm")
 
+
 # impedance width:
-print('Enter your estimated feed width (in mm):')
-w=3; #int(input());
-
-
+w_corrected = w;
 def testimpedance(w,e_eff):
     #calculation of effective dielectric constant
 
     er_eff = e_eff;
-
     k_0 = 2*math.pi*f/c;
     beta = k_0*math.sqrt(er_eff);
     testwh = w/h;
@@ -66,23 +69,25 @@ def testimpedance(w,e_eff):
       z2 = 60/math.sqrt(er_eff);
       Z_0 = z2*z1;
 
+
     if Z_0<49.8:
         #print("iterating ...Reducing the feed width. Current impedance of the feed: {} Ohms" .format(Z_0))
         w = w - increment;
-        Z_0 = testimpedance(w,e_eff);
+        Z_0 = testimpedance(w,e_eff)[0];
     elif Z_0>50.2:
         #print("iterating...Increamath.sint the feed width. Current impedance of the feed: {} Ohms".format(Z_0))
         w = w + increment;
-        Z_0 = testimpedance(w,e_eff);
+        Z_0 = testimpedance(w,e_eff)[0];
     else:
+        w_corrected = w;
         pass
 
-    return Z_0
+    return Z_0, w_corrected
 
-Z_0 = testimpedance(w,e_eff)
+Z_0, w_corrected = testimpedance(w,e_eff)
 print("Interations complete.")
 print("Current impedance of the feed (in mm): ", Z_0)
-print("Determined length of the feed (in mm): ", w)
+print("Determined length of the feed (in mm): ", w_corrected)
 
 #inse gap
 g = ((c*(4.65e-12))/(math.sqrt(2*e_eff)*(f*(1e-9))));
