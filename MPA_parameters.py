@@ -7,11 +7,11 @@ from numpy import log as ln
 ########################################
 # inputs
 print('Enter the di-electric constant:')
-er=4.2; #int(input());
+er=2.2; #int(input());
 print('Enter the substrate thickness (in mm)')
 h=1.6; #int(input());
 print('Enter the frequency (GHz):')
-f=1.95; #int(input());
+f=2.4; #int(input());
 print('Enter your estimated feed width (in mm):')
 w=6; #int(input());
 
@@ -50,10 +50,10 @@ print("The inset feed point is: ", inset, "mm")
 
 
 # impedance width:
-w_corrected = w;
+
 def testimpedance(w,e_eff):
     #calculation of effective dielectric constant
-
+    global w_corrected
     er_eff = e_eff;
     k_0 = 2*math.pi*f/c;
     beta = k_0*math.sqrt(er_eff);
@@ -80,14 +80,14 @@ def testimpedance(w,e_eff):
         Z_0 = testimpedance(w,e_eff)[0];
     else:
         w_corrected = w;
+        print("Iterations complete...")
+
+        print("Determined width of the feed (in mm): ", w)
         pass
+    return Z_0, w
 
-    return Z_0, w_corrected
-
-Z_0, w_corrected = testimpedance(w,e_eff)
-print("Interations complete.")
+Z_0, w = testimpedance(w,e_eff)
 print("Current impedance of the feed (in mm): ", Z_0)
-print("Determined length of the feed (in mm): ", w_corrected)
 
 #inse gap
 g = ((c*(4.65e-12))/(math.sqrt(2*e_eff)*(f*(1e-9))));
