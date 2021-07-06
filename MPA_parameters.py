@@ -1,8 +1,7 @@
 import math
-import numpy
 import scipy.integrate as integrate
 import scipy.special as special
-from numpy import log as ln
+from math import log as ln
 
 ########################################
 # inputs
